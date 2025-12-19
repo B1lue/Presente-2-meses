@@ -26,6 +26,15 @@ function App() {
   const [animatedHours, setAnimatedHours] = useState(0);
   const wrappedRef = useRef<HTMLDivElement>(null);
 
+  // Novos estados para Story Wrapped
+  const [currentSlide, setCurrentSlide] = useState(0);
+  const [storyVisible, setStoryVisible] = useState(false);
+  const storyRef = useRef<HTMLDivElement>(null);
+
+  // Contador em tempo real
+  const [liveMinutes, setLiveMinutes] = useState(0);
+  const [liveSeconds, setLiveSeconds] = useState(0);
+
   // Data do início do relacionamento: 2 de Outubro
   // Detecta automaticamente o ano (ano atual ou ano anterior se a data já passou)
   const getRelationshipStartDate = () => {
@@ -268,6 +277,134 @@ function App() {
     animateCounter(stats.totalMinutes, setAnimatedMinutes, 2000);
     animateCounter(stats.totalHours, setAnimatedHours, 2000);
   }, [wrappedVisible, stats.totalMinutes, stats.totalHours]);
+
+  // Intersection Observer para Story Wrapped
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            setStoryVisible(true);
+          }
+        });
+      },
+      { threshold: 0.3 }
+    );
+
+    if (storyRef.current) {
+      observer.observe(storyRef.current);
+    }
+
+    return () => {
+      if (storyRef.current) {
+        observer.unobserve(storyRef.current);
+      }
+    };
+  }, []);
+
+  // Atualizar contador em tempo real
+  useEffect(() => {
+    const updateLiveCounter = () => {
+      const now = new Date().getTime();
+      const difference = now - relationshipStartDate;
+      const totalSeconds = Math.floor(difference / 1000);
+      const totalMinutes = Math.floor(totalSeconds / 60);
+
+      setLiveMinutes(totalMinutes);
+      setLiveSeconds(totalSeconds % 60);
+    };
+
+    updateLiveCounter();
+    const interval = setInterval(updateLiveCounter, 1000);
+
+    return () => clearInterval(interval);
+  }, [relationshipStartDate]);
+
+  // Navegação dos slides
+  const nextSlide = () => {
+    setCurrentSlide((prev) => (prev + 1) % wrappedStories.length);
+  };
+
+  const prevSlide = () => {
+    setCurrentSlide((prev) => (prev - 1 + wrappedStories.length) % wrappedStories.length);
+  };
+
+  // Gestos de swipe para stories
+  const [storyTouchStart, setStoryTouchStart] = useState(0);
+  const [storyTouchEnd, setStoryTouchEnd] = useState(0);
+
+  const handleStoryTouchStart = (e: React.TouchEvent) => {
+    setStoryTouchStart(e.targetTouches[0].clientX);
+  };
+
+  const handleStoryTouchEnd = (e: React.TouchEvent) => {
+    setStoryTouchEnd(e.changedTouches[0].clientX);
+    handleStorySwipe();
+  };
+
+  const handleStorySwipe = () => {
+    if (!storyTouchStart || !storyTouchEnd) return;
+
+    const distance = storyTouchStart - storyTouchEnd;
+    const isLeftSwipe = distance > 50;
+    const isRightSwipe = distance < -50;
+
+    if (isLeftSwipe) {
+      nextSlide();
+    } else if (isRightSwipe) {
+      prevSlide();
+    }
+  };
+
+  // Slides do Wrapped Story
+  const wrappedStories = [
+    {
+      type: 'comparison',
+      title: 'Isso dá mais tempo do que…',
+      highlight: `assistir ${Math.floor(stats.totalHours / 6)} temporadas de série`,
+      icon: '📺'
+    },
+    {
+      type: 'music',
+      title: 'A música que mais marcou vocês',
+      songTitle: 'I Love You',
+      artist: 'Billie Eilish',
+      cover: '/bebe.mp4',
+      icon: '🎵'
+    },
+    {
+      type: 'emotional',
+      title: 'E ainda é só o começo',
+      subtitle: '💖',
+      icon: '✨'
+    }
+  ];
+
+  // Comparações criativas
+  const creativeComparisons = [
+    {
+      icon: '📊',
+      text: `Entre tantas histórias que começaram, a nossa foi uma das que ficaram`
+    },
+    {
+      icon: '🎵',
+      text: `Já daria pra ouvir nossa música favorita ${Math.floor(stats.totalMinutes / 3.5).toLocaleString('pt-BR')} vezes`
+    },
+    {
+      icon: '🌎',
+      text: `Tempo suficiente pra atravessar o Brasil ${Math.floor(stats.totalHours / 72)} vezes de carro`
+    }
+  ];
+
+  // Palavras do mapa emocional
+  const emotionalWords = [
+    { text: 'Seguro', delay: 0 },
+    { text: 'Em casa', delay: 0.5 },
+    { text: 'Amor', delay: 1 },
+    { text: 'Riso', delay: 1.5 },
+    { text: 'Calma', delay: 2 },
+    { text: 'Confiança', delay: 2.5 }
+  ];
 
   return (
     <div className="app-container">
@@ -546,6 +683,143 @@ function App() {
               </p>
             </div>
           </div>
+        </div>
+
+        {/* Story Wrapped Section */}
+        <div className="story-wrapped-section" ref={storyRef}>
+          <div className="story-header">
+            <h2 className="story-title">Curiosidades Nossas 💖</h2>
+          </div>
+
+          <div
+            className="story-container"
+            onTouchStart={handleStoryTouchStart}
+            onTouchEnd={handleStoryTouchEnd}
+          >
+            {/* Progress Indicators */}
+            <div className="story-progress">
+              {wrappedStories.map((_, index) => (
+                <div
+                  key={index}
+                  className={`progress-bar-story ${index <= currentSlide ? 'active' : ''}`}
+                />
+              ))}
+            </div>
+
+            {/* Slides */}
+            <div className={`story-slide ${storyVisible ? 'visible' : ''}`}>
+              {wrappedStories[currentSlide].type === 'stat' && (
+                <div className="story-content stat-story">
+                  <div className="story-icon">{wrappedStories[currentSlide].icon}</div>
+                  <p className="story-text">{wrappedStories[currentSlide].title}</p>
+                  <h2 className="story-highlight">{wrappedStories[currentSlide].highlight}</h2>
+                </div>
+              )}
+
+              {wrappedStories[currentSlide].type === 'comparison' && (
+                <div className="story-content comparison-story">
+                  <div className="story-icon">{wrappedStories[currentSlide].icon}</div>
+                  <p className="story-text">{wrappedStories[currentSlide].title}</p>
+                  <h2 className="story-highlight">{wrappedStories[currentSlide].highlight}</h2>
+                </div>
+              )}
+
+              {wrappedStories[currentSlide].type === 'music' && (
+                <div className="story-content music-story">
+                  <div className="story-icon">{wrappedStories[currentSlide].icon}</div>
+                  <p className="story-text">{wrappedStories[currentSlide].title}</p>
+                  <div className="music-card-story">
+                    <div className="music-cover-story">🎵</div>
+                    <h3 className="music-title-story">{wrappedStories[currentSlide].songTitle}</h3>
+                    <p className="music-artist-story">{wrappedStories[currentSlide].artist}</p>
+                  </div>
+                </div>
+              )}
+
+              {wrappedStories[currentSlide].type === 'emotional' && (
+                <div className="story-content emotional-story">
+                  <div className="story-icon-large">{wrappedStories[currentSlide].icon}</div>
+                  <h2 className="story-emotional-title">{wrappedStories[currentSlide].title}</h2>
+                  <p className="story-emotional-subtitle">{wrappedStories[currentSlide].subtitle}</p>
+                </div>
+              )}
+            </div>
+
+            {/* Navigation Buttons */}
+            <div className="story-navigation">
+              <button
+                className="story-nav-btn prev"
+                onClick={prevSlide}
+                disabled={currentSlide === 0}
+              >
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="white">
+                  <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z" />
+                </svg>
+              </button>
+              <button
+                className="story-nav-btn next"
+                onClick={nextSlide}
+                disabled={currentSlide === wrappedStories.length - 1}
+              >
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="white">
+                  <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z" />
+                </svg>
+              </button>
+            </div>
+
+            {/* Slide Counter */}
+            <p className="story-counter">
+              {currentSlide + 1} / {wrappedStories.length}
+            </p>
+          </div>
+        </div>
+
+        {/* Mapa Emocional */}
+        <div className="emotional-map">
+          <h3 className="emotional-map-title">💖 Como a gente se sente junto</h3>
+          <div className="emotional-words">
+            {emotionalWords.map((word, index) => (
+              <span
+                key={index}
+                className="floating-word"
+                style={{ animationDelay: `${word.delay}s` }}
+              >
+                {word.text}
+              </span>
+            ))}
+          </div>
+        </div>
+
+        {/* Contador em Tempo Real */}
+        <div className="live-counter">
+          <p className="live-counter-title">⏳ Enquanto você está aqui…</p>
+          <div className="live-counter-display">
+            <div className="live-counter-item">
+              <span className="live-counter-number">{liveMinutes.toLocaleString('pt-BR')}</span>
+              <span className="live-counter-label">minutos</span>
+            </div>
+            <span className="live-counter-separator">:</span>
+            <div className="live-counter-item">
+              <span className="live-counter-number">{liveSeconds.toString().padStart(2, '0')}</span>
+              <span className="live-counter-label">segundos</span>
+            </div>
+          </div>
+          <p className="live-counter-subtitle">Nosso tempo juntos continua aumentando 💗</p>
+        </div>
+
+        {/* Comparações Criativas */}
+        <div className="creative-comparisons">
+          {creativeComparisons.map((comparison, index) => (
+            <div key={index} className="comparison-card" style={{ animationDelay: `${index * 0.2}s` }}>
+              <div className="comparison-icon">{comparison.icon}</div>
+              <p className="comparison-text">{comparison.text}</p>
+            </div>
+          ))}
+        </div>
+
+        {/* Texto Emocional Final */}
+        <div className="emotional-final-text">
+          <p>"Tudo isso existe porque um dia a gente escolheu ficar."</p>
         </div>
 
         {/* Decorative Footer */}

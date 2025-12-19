@@ -675,6 +675,377 @@
   max-width: 500px;
 }
 
+/* Story Wrapped Section */
+.story-wrapped-section {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  margin-top: 40px;
+  padding: 20px 0;
+}
+
+.story-header {
+  text-align: center;
+  opacity: 0;
+  animation: fadeInUp 0.8s ease-out 0.2s forwards;
+}
+
+.story-title {
+  font-size: 26px;
+  font-weight: 700;
+  color: var(--text-white);
+  margin-bottom: 8px;
+  background: linear-gradient(135deg, #d946a6, #a21caf);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.story-container {
+  position: relative;
+  background: rgba(0, 0, 0, 0.5);
+  border-radius: var(--border-radius-large);
+  padding: 32px 24px;
+  min-height: 450px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  box-shadow: var(--shadow-medium);
+  touch-action: pan-y;
+}
+
+.story-progress {
+  position: absolute;
+  top: 16px;
+  left: 24px;
+  right: 24px;
+  display: flex;
+  gap: 6px;
+  z-index: 10;
+}
+
+.progress-bar-story {
+  flex: 1;
+  height: 3px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 2px;
+  transition: background 0.3s ease;
+}
+
+.progress-bar-story.active {
+  background: linear-gradient(90deg, #d946a6, #a21caf);
+}
+
+.story-slide {
+  width: 100%;
+  opacity: 0;
+  transform: scale(0.95);
+  transition: all 0.5s ease-out;
+}
+
+.story-slide.visible {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.story-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 20px;
+  padding: 40px 0;
+}
+
+.story-icon {
+  font-size: 64px;
+  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
+}
+
+.story-text {
+  font-size: 16px;
+  color: var(--text-gray);
+  letter-spacing: 0.5px;
+}
+
+.story-highlight {
+  font-size: 32px;
+  font-weight: 700;
+  color: var(--text-white);
+  line-height: 1.3;
+  background: linear-gradient(135deg, #d946a6, #a21caf);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.music-card-story {
+  background: linear-gradient(135deg, rgba(217, 70, 166, 0.15), rgba(162, 28, 175, 0.15));
+  border: 1px solid rgba(217, 70, 166, 0.3);
+  border-radius: var(--border-radius);
+  padding: 32px 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  min-width: 250px;
+}
+
+.music-cover-story {
+  font-size: 80px;
+  margin-bottom: 8px;
+}
+
+.music-title-story {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--text-white);
+}
+
+.music-artist-story {
+  font-size: 14px;
+  color: var(--text-gray);
+}
+
+.story-icon-large {
+  font-size: 96px;
+  filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.4));
+}
+
+.story-emotional-title {
+  font-size: 36px;
+  font-weight: 700;
+  color: var(--text-white);
+  line-height: 1.2;
+}
+
+.story-emotional-subtitle {
+  font-size: 48px;
+  margin-top: 8px;
+}
+
+.story-navigation {
+  position: absolute;
+  bottom: 80px;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: space-between;
+  padding: 0 24px;
+}
+
+.story-nav-btn {
+  background: linear-gradient(135deg, #d946a6, #a21caf);
+  border: none;
+  border-radius: 50%;
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: var(--shadow-medium);
+}
+
+.story-nav-btn:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.story-nav-btn:not(:disabled):active {
+  transform: scale(0.92);
+}
+
+.story-counter {
+  position: absolute;
+  bottom: 24px;
+  font-size: 13px;
+  color: var(--text-gray);
+}
+
+/* Mapa Emocional */
+.emotional-map {
+  background: linear-gradient(135deg, rgba(107, 45, 61, 0.4), rgba(90, 37, 53, 0.4));
+  border: 1px solid rgba(217, 70, 166, 0.2);
+  border-radius: var(--border-radius-large);
+  padding: 40px 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 32px;
+  box-shadow: var(--shadow-medium);
+  margin-top: 32px;
+  overflow: hidden;
+  position: relative;
+}
+
+.emotional-map-title {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--text-white);
+  text-align: center;
+  z-index: 2;
+}
+
+.emotional-words {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+  position: relative;
+  z-index: 1;
+  min-height: 200px;
+}
+
+.floating-word {
+  font-size: 24px;
+  font-weight: 600;
+  color: var(--text-white);
+  opacity: 0;
+  animation: floatIn 3s ease-in-out infinite;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+/* Contador em Tempo Real */
+.live-counter {
+  background: rgba(0, 0, 0, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: var(--border-radius-large);
+  padding: 32px 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  box-shadow: var(--shadow-medium);
+  margin-top: 32px;
+  position: relative;
+  overflow: hidden;
+}
+
+.live-counter::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, #d946a6, #a21caf);
+}
+
+.live-counter-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text-white);
+  text-align: center;
+}
+
+.live-counter-display {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.live-counter-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.live-counter-number {
+  font-size: 48px;
+  font-weight: 700;
+  color: var(--text-white);
+  line-height: 1;
+  background: linear-gradient(135deg, #d946a6, #a21caf);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.live-counter-separator {
+  font-size: 40px;
+  font-weight: 700;
+  color: var(--text-white);
+  opacity: 0.6;
+  animation: blink 1s ease-in-out infinite;
+}
+
+.live-counter-label {
+  font-size: 12px;
+  color: var(--text-gray);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.live-counter-subtitle {
+  font-size: 13px;
+  color: var(--text-gray);
+  text-align: center;
+  margin-top: 8px;
+}
+
+/* Comparações Criativas */
+.creative-comparisons {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-top: 32px;
+}
+
+.comparison-card {
+  background: rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: var(--border-radius);
+  padding: 24px;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  box-shadow: var(--shadow-light);
+  opacity: 0;
+  animation: fadeInUp 0.7s ease-out forwards;
+  transition: all 0.3s ease;
+}
+
+.comparison-card:hover {
+  background: rgba(0, 0, 0, 0.5);
+  border-color: rgba(217, 70, 166, 0.3);
+  transform: translateY(-4px);
+}
+
+.comparison-icon {
+  font-size: 40px;
+  flex-shrink: 0;
+}
+
+.comparison-text {
+  font-size: 14px;
+  color: var(--text-white);
+  line-height: 1.6;
+  opacity: 0.95;
+}
+
+/* Texto Emocional Final */
+.emotional-final-text {
+  text-align: center;
+  padding: 60px 24px;
+  margin-top: 40px;
+}
+
+.emotional-final-text p {
+  font-size: 18px;
+  font-weight: 500;
+  color: var(--text-white);
+  line-height: 1.8;
+  font-style: italic;
+  opacity: 0.9;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
 /* Animations */
 @keyframes fadeInUp {
   from {
@@ -704,6 +1075,26 @@
   }
   50% {
     transform: scale(1.1);
+  }
+}
+
+@keyframes floatIn {
+  0%, 100% {
+    opacity: 0.6;
+    transform: translateY(0) scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: translateY(-10px) scale(1.05);
+  }
+}
+
+@keyframes blink {
+  0%, 100% {
+    opacity: 0.6;
+  }
+  50% {
+    opacity: 0.2;
   }
 }
 
@@ -737,6 +1128,26 @@
   .final-icon {
     font-size: 64px;
   }
+
+  .story-highlight {
+    font-size: 38px;
+  }
+
+  .story-emotional-title {
+    font-size: 42px;
+  }
+
+  .floating-word {
+    font-size: 28px;
+  }
+
+  .live-counter-number {
+    font-size: 56px;
+  }
+
+  .emotional-final-text p {
+    font-size: 20px;
+  }
 }
 
 @media (min-width: 600px) {
@@ -766,6 +1177,20 @@
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
     gap: 20px;
+  }
+
+  .creative-comparisons {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+  }
+
+  .emotional-words {
+    gap: 32px;
+  }
+
+  .floating-word {
+    font-size: 32px;
   }
 }
 
