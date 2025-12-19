@@ -20,6 +20,12 @@ function App() {
   const audioRef = useRef<HTMLAudioElement>(null);
   const carouselRef = useRef<HTMLDivElement>(null);
 
+  // Novos estados para Wrapped
+  const [wrappedVisible, setWrappedVisible] = useState(false);
+  const [animatedMinutes, setAnimatedMinutes] = useState(0);
+  const [animatedHours, setAnimatedHours] = useState(0);
+  const wrappedRef = useRef<HTMLDivElement>(null);
+
   // Data do início do relacionamento: 2 de Outubro
   // Detecta automaticamente o ano (ano atual ou ano anterior se a data já passou)
   const getRelationshipStartDate = () => {
@@ -182,6 +188,86 @@ function App() {
       prevPhoto();
     }
   };
+
+  // Calcular estatísticas do relacionamento
+  const calculateRelationshipStats = () => {
+    const now = new Date().getTime();
+    const difference = now - relationshipStartDate;
+    const totalMinutes = Math.floor(difference / 1000 / 60);
+    const totalHours = Math.floor(totalMinutes / 60);
+    return { totalMinutes, totalHours };
+  };
+
+  const stats = calculateRelationshipStats();
+
+  // Momentos marcantes (mockado)
+  const highlights = [
+    {
+      icon: '💬',
+      title: 'Frase que mais marcou',
+      text: '"Você me faz querer ser uma pessoa melhor a cada dia"'
+    },
+    {
+      icon: '✨',
+      title: 'Momento mais inesquecível',
+      text: 'Aquela noite que conversamos até o amanhecer e perdemos a noção do tempo'
+    },
+    {
+      icon: '💕',
+      title: 'O que mais amamos fazer juntos',
+      text: 'Ficar deitados conversando sobre tudo e nada, só curtindo a companhia um do outro'
+    }
+  ];
+
+  // Intersection Observer para animação ao scroll
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            setWrappedVisible(true);
+          }
+        });
+      },
+      { threshold: 0.2 }
+    );
+
+    if (wrappedRef.current) {
+      observer.observe(wrappedRef.current);
+    }
+
+    return () => {
+      if (wrappedRef.current) {
+        observer.unobserve(wrappedRef.current);
+      }
+    };
+  }, []);
+
+  // Animar contadores progressivamente
+  useEffect(() => {
+    if (!wrappedVisible) return;
+
+    const animateCounter = (
+      target: number,
+      setter: React.Dispatch<React.SetStateAction<number>>,
+      duration: number
+    ) => {
+      let start = 0;
+      const increment = target / (duration / 16);
+      const timer = setInterval(() => {
+        start += increment;
+        if (start >= target) {
+          setter(target);
+          clearInterval(timer);
+        } else {
+          setter(Math.floor(start));
+        }
+      }, 16);
+    };
+
+    animateCounter(stats.totalMinutes, setAnimatedMinutes, 2000);
+    animateCounter(stats.totalHours, setAnimatedHours, 2000);
+  }, [wrappedVisible, stats.totalMinutes, stats.totalHours]);
 
   return (
     <div className="app-container">
@@ -398,6 +484,68 @@ function App() {
           <p className="carousel-counter">
             {currentPhotoIndex + 1} / {photos.length}
           </p>
+        </div>
+
+        {/* Nosso Wrapped Section */}
+        <div className="wrapped-section" ref={wrappedRef}>
+          <div className="wrapped-header">
+            <h2 className="wrapped-title">Nosso Wrapped 💖</h2>
+            <p className="wrapped-subtitle">Uma retrospectiva do nosso amor</p>
+          </div>
+
+          {/* Estatísticas */}
+          <div className={`wrapped-stats ${wrappedVisible ? 'visible' : ''}`}>
+            <div className="stat-card large">
+              <div className="stat-icon">⏱️</div>
+              <div className="stat-number">
+                {animatedMinutes.toLocaleString('pt-BR')}
+              </div>
+              <div className="stat-label">Minutos Juntos</div>
+              <div className="stat-description">
+                Cada minuto ao seu lado é especial
+              </div>
+            </div>
+
+            <div className="stat-card large">
+              <div className="stat-icon">💫</div>
+              <div className="stat-number">
+                {animatedHours.toLocaleString('pt-BR')}
+              </div>
+              <div className="stat-label">Horas de Amor</div>
+              <div className="stat-description">
+                E ainda quero muitas mais com você
+              </div>
+            </div>
+          </div>
+
+          {/* Destaques */}
+          <div className={`wrapped-highlights ${wrappedVisible ? 'visible' : ''}`}>
+            {highlights.map((highlight, index) => (
+              <div
+                key={index}
+                className="highlight-card"
+                style={{ animationDelay: `${0.2 + index * 0.15}s` }}
+              >
+                <div className="highlight-icon">{highlight.icon}</div>
+                <h3 className="highlight-title">{highlight.title}</h3>
+                <p className="highlight-text">{highlight.text}</p>
+              </div>
+            ))}
+          </div>
+
+          {/* Mensagem final do Wrapped */}
+          <div className={`wrapped-final ${wrappedVisible ? 'visible' : ''}`}>
+            <div className="final-card">
+              <div className="final-icon">🌟</div>
+              <h3 className="final-title">Nosso Ano Especial</h3>
+              <p className="final-text">
+                Cada momento com você é único e inesquecível.
+                Obrigado por fazer parte da minha história e por construir
+                essa jornada incrível ao meu lado. Aqui está para mais
+                memórias, risadas, e amor infinito. 💕
+              </p>
+            </div>
+          </div>
         </div>
 
         {/* Decorative Footer */}
