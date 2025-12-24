@@ -55,8 +55,8 @@ function App() {
   const photos = [
     '/foto1.png',
     '/foto2.png',
-    '/foto3.jpg',
-    '/foto4.jpg',
+    '/foto3.png',
+    '/foto3.png',
     '/foto5.jpg',
     '/foto6.jpg',
   ];
