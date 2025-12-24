@@ -53,8 +53,8 @@ function App() {
 
   // Lista de fotos do casal
   const photos = [
-    '/foto1.jpg',
-    '/foto2.jpg',
+    '/foto1.png',
+    '/foto2.png',
     '/foto3.jpg',
     '/foto4.jpg',
     '/foto5.jpg',
